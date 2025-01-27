@@ -1,97 +1,75 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# React Native Health Survey App
 
-# Getting Started
+This is a **React Native** project for a step-by-step health survey app, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+## Prerequisites
 
-## Step 1: Start Metro
+Before proceeding, ensure the following:
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+1. **Flask API Server**:
+    - This app relies on a Flask API running locally on port `5000`.
+    - Ensure the Flask server is set up and running before testing the APK.
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+2. **APK Installation**:
+    - Install the provided APK on your Android device or emulator.
+    - The APK is configured to communicate with the local server at `http://127.0.0.1:5000`.
 
-```sh
-# Using npm
-npm start
+### Start the Flask Server
 
-# OR using Yarn
-yarn start
-```
+1. Navigate to your Flask server project directory.
+2. Run the following command:
+   ```sh
+   python app.py
+   ```
 
-## Step 2: Build and run your app
+By default, the Flask server should run on `http://127.0.0.1:5000`.
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+## Testing the APK
 
-### Android
+### Step 1: Install the APK
 
-```sh
-# Using npm
-npm run android
+- Download the provided APK file to your Android device or emulator.
+- Install the APK by following these steps:
+    1. Transfer the APK to your device if necessary.
+    2. Open the APK file to begin installation.
+    3. Allow installation from unknown sources if prompted.
 
-# OR using Yarn
-yarn android
-```
+### Step 2: Verify Flask API Connectivity
 
-### iOS
+Once the app starts, it will attempt to connect to the Flask API at `http://127.0.0.1:5000`. If the API is not reachable:
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+1. Ensure the Flask server is running.
+2. Ensure the development environment supports network requests to `127.0.0.1`.
+    - For testing on an Android emulator, use `http://10.0.2.2:5000` instead of `http://127.0.0.1:5000`.
+    - If testing on a physical device, replace `127.0.0.1` with the machine's local IP address.
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+### Step 3: Run the Survey
 
-```sh
-bundle install
-```
+1. Open the app and enter your username on the Welcome Screen.
+2. Proceed through the questions one at a time.
+3. At the end, view the completion report and restart the survey as needed.
 
-Then, and every time you update your native dependencies, run:
+## Key Features
 
-```sh
-bundle exec pod install
-```
+- Step-by-step health survey with one question per screen.
+- Local progress persistence using AsyncStorage.
+- Smooth screen transitions.
+- Backend integration with a Flask API for fetching questions and saving responses.
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+## Troubleshooting
 
-```sh
-# Using npm
-npm run ios
+- **Flask Server Not Responding**: Check if the server is running on port `5000` and the network connection is active.
+- **API Connection Issues**:
+    - For emulators, use `http://10.0.2.2:5000` to connect to the local machine.
+    - For physical devices, ensure the local server is accessible over the network by using the machine's local IP.
+- **App Issues**: Restart the app and ensure the server is running before starting the survey.
 
-# OR using Yarn
-yarn ios
-```
+## Learn More
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+To learn more about React Native and related tools, take a look at the following resources:
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+- [React Native Documentation](https://reactnative.dev)
+- [Flask Documentation](https://flask.palletsprojects.com/)
+- [AsyncStorage](https://react-native-async-storage.github.io/async-storage/docs/installation/)
 
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+---
