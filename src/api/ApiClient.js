@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://127.0.0.1:5001/api';
+// Enter your NGROK url here to test it also make sure that you add /api in the end.
+const API_BASE_URL = 'http://127.0.0.1:5000/api';
 
 const ApiClient = axios.create({
   baseURL: API_BASE_URL,

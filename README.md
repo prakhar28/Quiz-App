@@ -8,68 +8,108 @@ Before proceeding, ensure the following:
 
 1. **Flask API Server**:
     - This app relies on a Flask API running locally on port `5000`.
-    - Ensure the Flask server is set up and running before testing the APK.
+    - Ensure the Flask server is set up and running before testing.
 
-2. **APK Installation**:
-    - Install the provided APK on your Android device or emulator.
-    - The APK is configured to communicate with the local server at `http://127.0.0.1:5000`.
+2. **ngrok Installation**:
+    - This app uses ngrok to expose the local Flask server to the internet for testing release APKs.
+    - Install ngrok by either:
+        - Running:
+          ```sh
+          npm install -g ngrok
+          ```
+        - Or downloading it directly from [ngrok's website](https://ngrok.com/download).
+    - Create a free account on ngrok and authenticate it by following ngrok's setup instructions.
 
-### Start the Flask Server
+## Why Localhost Doesn't Work in Release APKs
 
-1. Navigate to your Flask server project directory.
-2. Run the following command:
+In release builds of Android and iOS:
+- **Localhost (`127.0.0.1`)** refers to the device or emulator itself, not your development machine.
+- Android and iOS do not allow direct access to localhost APIs unless properly configured with network routing.
+
+To overcome this, we use ngrok to expose the local Flask server as a public URL that can be accessed by the release APK.
+
+## Steps to Test Release APK with ngrok
+
+### Step 1: Start Flask Server
+
+Run the Flask server locally on your machine:
+```sh
+python app.py
+```
+Ensure it is running on `http://127.0.0.1:5000`.
+
+### Step 2: Start ngrok
+
+Expose the Flask server to the internet using ngrok:
+```sh
+ngrok http 5000
+```
+This will provide you with a public URL, such as:
+```plaintext
+Forwarding   https://<random-id>.ngrok.io -> http://127.0.0.1:5000
+```
+Copy the HTTPS URL (`https://<random-id>.ngrok.io`).
+
+### Step 3: Update API Client
+
+In your React Native project, update the API URL in your API client (e.g., `src/api/ApiClient.js`) with the ngrok URL:
+```javascript
+const API_URL = "https://<random-id>.ngrok.io/api"; // Replace with your ngrok URL
+export default API_URL;
+```
+
+### Step 4: Generate a Release APK
+
+1. Navigate to the `android/` directory:
    ```sh
-   python app.py
+   cd android
+   ```
+2. Build the release APK:
+   ```sh
+   ./gradlew assembleRelease
+   ```
+3. Locate the generated APK:
+   ```plaintext
+   android/app/build/outputs/apk/release/app-release.apk
    ```
 
-By default, the Flask server should run on `http://127.0.0.1:5000`.
+### Step 5: Install and Test the APK
 
-## Testing the APK
+#### For Android Emulator
+1. Start your emulator using Android Studio or the command line.
+2. Install the release APK:
+   ```sh
+   adb install android/app/build/outputs/apk/release/app-release.apk
+   ```
+3. Launch the app on the emulator.
 
-### Step 1: Install the APK
+#### For Physical Devices
+1. Transfer the APK to your device.
+2. Install it by opening the APK file.
+3. Ensure the device is connected to the same network as your machine.
 
-- Download the provided APK file to your Android device or emulator.
-- Install the APK by following these steps:
-    1. Transfer the APK to your device if necessary.
-    2. Open the APK file to begin installation.
-    3. Allow installation from unknown sources if prompted.
+### Step 6: Verify Connectivity
+- Open the app and interact with it as usual.
+- Use the ngrok public URL to ensure the app communicates with the local Flask server.
 
-### Step 2: Verify Flask API Connectivity
+## Notes
 
-Once the app starts, it will attempt to connect to the Flask API at `http://127.0.0.1:5000`. If the API is not reachable:
+1. **Temporary URL**:
+    - The free-tier ngrok session expires after ~2 hours.
+    - If the session expires, restart ngrok and update the API URL in your code.
 
-1. Ensure the Flask server is running.
-2. Ensure the development environment supports network requests to `127.0.0.1`.
-    - For testing on an Android emulator, use `http://10.0.2.2:5000` instead of `http://127.0.0.1:5000`.
-    - If testing on a physical device, replace `127.0.0.1` with the machine's local IP address.
+2. **Cleartext Traffic Issues**:
+    - Android release builds may block HTTP URLs. Always use the HTTPS URL provided by ngrok.
 
-### Step 3: Run the Survey
+3. **Rebuild for URL Changes**:
+    - Every time you restart ngrok and get a new URL, rebuild the APK with the updated API URL.
 
-1. Open the app and enter your username on the Welcome Screen.
-2. Proceed through the questions one at a time.
-3. At the end, view the completion report and restart the survey as needed.
+## Summary
 
-## Key Features
+1. Start the Flask server (`python app.py`).
+2. Start ngrok (`ngrok http 5000`).
+3. Update the API URL in your app with the ngrok URL.
+4. Generate the release APK (`./gradlew assembleRelease`).
+5. Install and test the APK on the emulator or device.
 
-- Step-by-step health survey with one question per screen.
-- Local progress persistence using AsyncStorage.
-- Smooth screen transitions.
-- Backend integration with a Flask API for fetching questions and saving responses.
-
-## Troubleshooting
-
-- **Flask Server Not Responding**: Check if the server is running on port `5000` and the network connection is active.
-- **API Connection Issues**:
-    - For emulators, use `http://10.0.2.2:5000` to connect to the local machine.
-    - For physical devices, ensure the local server is accessible over the network by using the machine's local IP.
-- **App Issues**: Restart the app and ensure the server is running before starting the survey.
-
-## Learn More
-
-To learn more about React Native and related tools, take a look at the following resources:
-
-- [React Native Documentation](https://reactnative.dev)
-- [Flask Documentation](https://flask.palletsprojects.com/)
-- [AsyncStorage](https://react-native-async-storage.github.io/async-storage/docs/installation/)
-
----
+By following these steps, you can successfully test your release APK with a local Flask server using ngrok. 🚀
